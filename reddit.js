@@ -39,7 +39,7 @@ var domain = process.env.domain
 
 function checkIP() {
     const index = fetch('http://api.ipify.org', {
-        agent: new HttpsProxyAgent('http://IFd0dCioL1LkJwrE:Jancok123@geo.iproyal.com:12321'),
+            agent: new HttpsProxyAgent('http://IFd0dCioL1LkJwrE:Jancok123@geo.iproyal.com:12321'),
             method: 'GET'
         })
         .then(async res => {
@@ -752,7 +752,7 @@ const getEmailRandom = (email, domain) => new Promise((resolve, reject) => {
     console.log('[2] ' + chalk.green('Reddit Auto Post '))
     console.log('[3] ' + chalk.red('Reddit Auto UpVote '))
     console.log('[4] ' + chalk.green('Reddit Auto Comment '))
-
+    console.log('[5] ' + chalk.green('Reddit Input Cookie '))
     console.log()
     var pilihan = readlineSync.question('[!] Vote Tools? : ')
     console.log()
@@ -1153,7 +1153,58 @@ const getEmailRandom = (email, domain) => new Promise((resolve, reject) => {
                 console.log()
             }
         }
+    } else if (pilihan == 5) {
+        var option = readlineSync.question(`[!] Mass Account [ ` + chalk.green(`y`) + ` ] Input Cookie Manual [ ` + chalk.green(`n`) + ` ] ?? : `)
+        console.log()
+        if (option.toLowerCase() == "y") {
+            const cookies = fs.readFileSync('cookie.txt', 'utf8')
+            const list = cookies.split(/\r?\n/);
+            console.log()
+            for (var i = 0; i < list.length; i++) {
+                var cookieInput = list[i].split('|')[0];
+
+                const arrayPush = detect.push({
+                    cookie: cookieInput
+                });
+
+                var cookie = cookieInput;
+                const checkProfiledata = await infoAccount(cookie, proxyMu);
+                try {
+                    var username = checkProfiledata.match('<span class="text-12 text-secondary-weak">u/(.*?)</span>')[1]
+
+                    const testlistJson = JSON.stringify(detect);
+                    fs.unlinkSync(`loginReddit.json`)
+
+                    fs.appendFileSync(`loginReddit.json`, testlistJson);
+                    console.log(chalk.green('    Successfully input cookie ' + username + ''))
+                } catch (err) {
+                    console.log(chalk.green('    Failure input cookie [ Cookie Not Valid ] '))
+                }
+            }
+        } else if (option.toLowerCase() == "n") {
+            console.log()
+            var cookieInput = readlineSync.question('[!] Cookie : ')
+            console.log()
+            const arrayPush = detect.push({
+                cookie: cookieInput
+            });
+
+            var cookie = cookieInput;
+            const checkProfiledata = await infoAccount(cookie, proxyMu);
+            try {
+                var username = checkProfiledata.match('<span class="text-12 text-secondary-weak">u/(.*?)</span>')[1]
+
+                const testlistJson = JSON.stringify(detect);
+                fs.unlinkSync(`loginReddit.json`)
+
+                fs.appendFileSync(`loginReddit.json`, testlistJson);
+                console.log(chalk.green('    Successfully input cookie ' + username + ''))
+            } catch (err) {
+                console.log(chalk.green('    Failure input cookie [ Cookie Not Valid ] '))
+            }
+        }
     }
+
 })();
 
 
